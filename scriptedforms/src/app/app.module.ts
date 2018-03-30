@@ -34,6 +34,8 @@ import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from '../vendors/material.module';
 
+import { AgGridModule } from 'ag-grid-angular/main';
+
 import { AppErrorHandler } from './app-error-handler';
 
 import { KernelService } from './services/kernel.service';
@@ -61,6 +63,7 @@ import { AppComponent } from './app.component';
     BrowserModule,
     FormsModule,
     MaterialModule,
+    AgGridModule.withComponents([]),
     FormBuilderModule,
     ToolbarModule
   ],

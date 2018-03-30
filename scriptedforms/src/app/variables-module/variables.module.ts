@@ -35,6 +35,8 @@ import {
   MaterialModule
 } from '../../vendors/material.module';
 
+import { AgGridModule } from 'ag-grid-angular/main';
+
 import { VariableBaseComponent } from './variable-base.component';
 import { NumberBaseComponent } from './number-base.component';
 import { BooleanBaseComponent } from './boolean-base.component';
@@ -56,7 +58,8 @@ import { StringListParameterComponent } from './string-list-parameter.component'
   imports: [
     CommonModule,
     MaterialModule,
-    FormsModule
+    FormsModule,
+    AgGridModule.withComponents([])
   ],
   declarations: [
     VariableBaseComponent,

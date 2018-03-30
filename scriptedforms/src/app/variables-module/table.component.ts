@@ -24,15 +24,15 @@
 // You should have received a copy of the Apache-2.0 along with this
 // program. If not, see <http://www.apache.org/licenses/LICENSE-2.0>.
 
-// import { BehaviorSubject } from 'rxjs';
-
 import {
-  Component, AfterViewInit
+  Component, AfterViewInit, OnInit
 } from '@angular/core';
 
 import {
   MatTableDataSource
 } from '@angular/material';
+
+import { GridOptions } from 'ag-grid/main';
 
 import * as  stringify from 'json-stable-stringify';
 
@@ -45,6 +45,14 @@ import { PandasTable } from '../interfaces/pandas-table';
 <span #variablecontainer *ngIf="variableName === undefined">
   <ng-content></ng-content>
 </span>
+
+
+<ag-grid-angular #agGrid domLayout="autoHeight" style="width: 100%;" class="ag-theme-material mat-elevation-z8"
+                [gridOptions]="gridOptions"
+                [columnDefs]="columnDefs2"
+                [rowData]="rowData">
+</ag-grid-angular>
+
 
 <div class="container mat-elevation-z8 avoid-page-break" >
   <mat-table #table [dataSource]="dataSource" *ngIf="variableValue">
@@ -92,7 +100,7 @@ styles: [
 }
 `]
 })
-export class TableComponent extends VariableBaseComponent implements AfterViewInit {
+export class TableComponent extends VariableBaseComponent implements AfterViewInit, OnInit {
   columnDefs: string[] = [];
   oldColumnDefs: string[] = [];
   dataSource: MatTableDataSource<{
@@ -103,6 +111,34 @@ export class TableComponent extends VariableBaseComponent implements AfterViewIn
   oldVariableValue: PandasTable;
   isPandas = true;
   focus: [number, string] = [null, null];
+
+  gridOptions: GridOptions;
+  rowData: any[];
+  columnDefs2: any[];
+
+  ngOnInit() {
+    // we pass an empty gridOptions in, so we can grab the api out
+    this.gridOptions = <GridOptions>{
+      onModelUpdated: () => {
+        this.gridOptions.api.sizeColumnsToFit();
+        // this.gridOptions.columnApi.autoSizeAllColumns();
+      }
+    };
+    this.columnDefs2 = [
+      {headerName: 'Make', field: 'make'},
+      {headerName: 'Model', field: 'model'},
+      {headerName: 'Price', field: 'price'}
+    ];
+    this.rowData = [
+      {make: 'Toyota', model: 'Celica', price: 35000},
+      {make: 'Ford', model: 'Mondeo', price: 32000},
+      {make: 'Porsche', model: 'Boxter', price: 72000}
+    ];
+  }
+
+  selectAllRows() {
+    this.gridOptions.api.selectAll();
+  }
 
   updateVariableView(value: PandasTable) {
     let numRowsUnchanged: boolean;
@@ -144,6 +180,20 @@ export class TableComponent extends VariableBaseComponent implements AfterViewIn
       this.dataSource.data = value.data;
       this.updateOldVariable();
     }
+
+    const columnDef2: any[] = [];
+    this.columnDefs.forEach(column => {
+      columnDef2.push({
+        headerName: column,
+        field: column,
+        editable: true
+      });
+    });
+
+    this.columnDefs2 = columnDef2;
+    this.rowData = value.data;
+    // this.gridOptions.api.refreshCells();
+    // this.gridOptions.api.sizeColumnsToFit();
   }
 
   onVariableChange(): Promise<void> {

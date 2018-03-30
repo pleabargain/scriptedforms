@@ -27,6 +27,7 @@
 import './polyfills';
 
 import './vendors/jupyterlab-styles';
+import './vendors/ag-grid';
 import './vendors/angular-styles';
 
 import 'hammerjs';
